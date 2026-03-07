@@ -1,0 +1,42 @@
+{% extends 'crm/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Fuarlar</h2>
+    <a href="{% url 'fair_add' %}" class="btn btn-primary">Yeni Fuar</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Fuar Adı</th>
+                    <th>Şehir</th>
+                    <th>Ülke</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fair in fairs %}
+                <tr>
+                    <td>{{ fair.name }}</td>
+                    <td>{{ fair.city|default:'-' }}</td>
+                    <td>{{ fair.country|default:'-' }}</td>
+                    <td>{{ fair.start_date|default:'-' }} - {{ fair.end_date|default:'-' }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'fair_edit' fair.pk %}" class="btn btn-sm btn-warning">Düzenle</a>
+                            <a href="{% url 'fair_delete' fair.pk %}" class="btn btn-sm btn-danger">Sil</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center py-4">Henüz fuar kaydı yok.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

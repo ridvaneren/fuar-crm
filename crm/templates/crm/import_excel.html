@@ -1,0 +1,46 @@
+{% extends 'crm/base.html' %}
+
+{% block content %}
+<h2 class="mb-3">Excel İçe Aktar</h2>
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Bağlanacak Fuar</label>
+                        {{ form.fair }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Excel Dosyası</label>
+                        {{ form.excel_file }}
+                    </div>
+                    <button class="btn btn-primary">Yükle ve Aktar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5>Beklenen sütun adları</h5>
+                <ul class="small mb-0">
+                    <li>FirmaID</li>
+                    <li>FuarID</li>
+                    <li>Firma Adı</li>
+                    <li>Yetkili</li>
+                    <li>Telefon</li>
+                    <li>Eposta</li>
+                    <li>Web</li>
+                    <li>Adres</li>
+                    <li>Firma Durumu</li>
+                    <li>Sonraki Eylem</li>
+                    <li>Son Temas</li>
+                    <li>Notlar</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'crm/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Gösterge Paneli</h2>
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Toplam Firma</div>
+                <div class="display-6 fw-semibold">{{ company_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Toplam Fuar</div>
+                <div class="display-6 fw-semibold">{{ fair_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Teklif Verilecek</div>
+                <div class="display-6 fw-semibold">{{ teklif_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Takip Edilecek</div>
+                <div class="display-6 fw-semibold">{{ follow_count }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">Son Eklenen Firmalar</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Firma</th>
+                    <th>Yetkili</th>
+                    <th>Telefon</th>
+                    <th>Fuar</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in last_companies %}
+                <tr>
+                    <td>{{ company.company_name }}</td>
+                    <td>{{ company.authorized_person|default:'-' }}</td>
+                    <td>{{ company.phone|default:'-' }}</td>
+                    <td>{{ company.fair|default:'-' }}</td>
+                    <td>{{ company.get_company_status_display|default:'-' }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center py-4">Henüz kayıt yok.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
