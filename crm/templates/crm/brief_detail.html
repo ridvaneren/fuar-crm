@@ -1,0 +1,103 @@
+{% extends 'crm/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Brief #{{ brief.pk }}</h2>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-outline-dark">Yazdır / PDF</button>
+        <a href="{% url 'brief_list' brief.company.pk %}" class="btn btn-outline-secondary">Tüm Briefs</a>
+        <a href="{% url 'company_list' %}" class="btn btn-outline-secondary">Firmalar</a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4" id="brief-print-area">
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h4 class="fw-bold">STAND TEKLİFİ</h4>
+                <p class="text-muted mb-0">Oluşturulma: {{ brief.created_at|date:"d.m.Y" }}</p>
+                {% if brief.gecerlilik_tarihi %}
+                <p class="text-muted mb-0">Geçerlilik: {{ brief.gecerlilik_tarihi|date:"d.m.Y" }}</p>
+                {% endif %}
+            </div>
+            <div class="col-auto">
+                <span class="badge fs-6
+                    {% if brief.durum == 'onaylandi' %}bg-success
+                    {% elif brief.durum == 'gonderildi' %}bg-primary
+                    {% elif brief.durum == 'reddedildi' %}bg-danger
+                    {% else %}bg-secondary{% endif %}">
+                    {{ brief.get_durum_display }}
+                </span>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-semibold mb-3">Firma Bilgileri</h6>
+                <table class="table table-sm table-borderless">
+                    <tr><th style="width:140px">Firma Adı</th><td>{{ brief.company.company_name }}</td></tr>
+                    <tr><th>Yetkili</th><td>{{ brief.company.authorized_person|default:'-' }}</td></tr>
+                    <tr><th>Telefon</th><td>{{ brief.company.phone|default:'-' }}</td></tr>
+                    <tr><th>E-posta</th><td>{{ brief.company.email|default:'-' }}</td></tr>
+                    <tr><th>Web</th><td>{{ brief.company.website|default:'-' }}</td></tr>
+                    <tr><th>Adres</th><td>{{ brief.company.address|default:'-' }}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-semibold mb-3">Fuar Bilgileri</h6>
+                {% if brief.company.fair %}
+                <table class="table table-sm table-borderless">
+                    <tr><th style="width:140px">Fuar</th><td>{{ brief.company.fair.name }}</td></tr>
+                    <tr><th>Şehir</th><td>{{ brief.company.fair.city|default:'-' }}</td></tr>
+                    <tr><th>Tarih</th><td>
+                        {% if brief.company.fair.start_date %}
+                            {{ brief.company.fair.start_date|date:"d.m.Y" }}
+                            {% if brief.company.fair.end_date %} — {{ brief.company.fair.end_date|date:"d.m.Y" }}{% endif %}
+                        {% else %}-{% endif %}
+                    </td></tr>
+                    <tr><th>Organizatör</th><td>{{ brief.company.fair.organizer|default:'-' }}</td></tr>
+                </table>
+                {% else %}
+                <p class="text-muted">Fuar bilgisi yok.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-semibold mb-3">Stand Detayları</h6>
+                <table class="table table-sm table-borderless">
+                    <tr><th style="width:140px">Boyut</th><td>{{ brief.stand_boyutu|default:'-' }}</td></tr>
+                    <tr><th>Tip</th><td>{{ brief.stand_tipi|default:'-' }}</td></tr>
+                    <tr><th>Konum / Hol</th><td>{{ brief.stand_konumu|default:'-' }}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-semibold mb-3">Fiyat</h6>
+                {% if brief.fiyat %}
+                <p class="fs-3 fw-bold text-success">{{ brief.fiyat }} {{ brief.para_birimi }}</p>
+                {% else %}
+                <p class="text-muted">Fiyat girilmedi.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if brief.ozel_notlar %}
+        <hr>
+        <h6 class="text-uppercase text-muted fw-semibold mb-2">Özel Notlar</h6>
+        <p>{{ brief.ozel_notlar|linebreaksbr }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+@media print {
+    nav, .btn, .d-flex.justify-content-between { display: none !important; }
+    .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+}
+</style>
+{% endblock %}

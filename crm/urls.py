@@ -11,6 +11,9 @@ from .views import (
     FairDeleteView,
     import_excel_view,
     export_companies_excel,
+    brief_create,
+    brief_detail,
+    brief_list,
 )
 
 urlpatterns = [
@@ -25,4 +28,7 @@ urlpatterns = [
     path('fairs/<int:pk>/delete/', FairDeleteView.as_view(), name='fair_delete'),
     path('import/', import_excel_view, name='import_excel'),
     path('export/', export_companies_excel, name='export_excel'),
+    path('companies/<int:company_pk>/brief/new/', brief_create, name='brief_create'),
+    path('companies/<int:company_pk>/briefs/', brief_list, name='brief_list'),
+    path('briefs/<int:pk>/', brief_detail, name='brief_detail'),
 ]

@@ -63,3 +63,35 @@ class Company(models.Model):
 
     def __str__(self):
         return self.company_name
+
+
+class Brief(models.Model):
+    STATUS_CHOICES = [
+        ('taslak', 'Taslak'),
+        ('gonderildi', 'Gönderildi'),
+        ('onaylandi', 'Onaylandı'),
+        ('reddedildi', 'Reddedildi'),
+    ]
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='briefs')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    stand_boyutu = models.CharField(max_length=100, blank=True, verbose_name='Stand Boyutu (m²)')
+    stand_konumu = models.CharField(max_length=255, blank=True, verbose_name='Stand Konumu / Hol')
+    stand_tipi = models.CharField(max_length=100, blank=True, verbose_name='Stand Tipi')
+
+    fiyat = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, verbose_name='Teklif Fiyatı')
+    para_birimi = models.CharField(max_length=10, default='EUR', verbose_name='Para Birimi')
+    gecerlilik_tarihi = models.DateField(null=True, blank=True, verbose_name='Geçerlilik Tarihi')
+
+    ozel_notlar = models.TextField(blank=True, verbose_name='Özel Notlar')
+    durum = models.CharField(max_length=20, choices=STATUS_CHOICES, default='taslak', verbose_name='Durum')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.company.company_name} - Brief #{self.pk}"

@@ -4,12 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .forms import CompanyForm, FairForm, ExcelImportForm
-from .models import Company, Fair
+from .forms import BriefForm, CompanyForm, FairForm, ExcelImportForm
+from .models import Brief, Company, Fair
 from .services import import_companies_from_excel
 
 
@@ -106,6 +106,36 @@ class FairDeleteView(LoginRequiredMixin, DeleteView):
     model = Fair
     template_name = 'crm/fair_confirm_delete.html'
     success_url = reverse_lazy('fair_list')
+
+
+@login_required
+def brief_create(request, company_pk):
+    company = get_object_or_404(Company, pk=company_pk)
+    if request.method == 'POST':
+        form = BriefForm(request.POST)
+        if form.is_valid():
+            brief = form.save(commit=False)
+            brief.company = company
+            brief.created_by = request.user
+            brief.save()
+            messages.success(request, f'{company.company_name} için brief oluşturuldu.')
+            return redirect('brief_detail', pk=brief.pk)
+    else:
+        form = BriefForm()
+    return render(request, 'crm/brief_form.html', {'form': form, 'company': company})
+
+
+@login_required
+def brief_detail(request, pk):
+    brief = get_object_or_404(Brief, pk=pk)
+    return render(request, 'crm/brief_detail.html', {'brief': brief})
+
+
+@login_required
+def brief_list(request, company_pk):
+    company = get_object_or_404(Company, pk=company_pk)
+    briefs = company.briefs.all()
+    return render(request, 'crm/brief_list.html', {'company': company, 'briefs': briefs})
 
 
 @login_required

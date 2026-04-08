@@ -1,5 +1,5 @@
 from django import forms
-from .models import Company, Fair
+from .models import Company, Fair, Brief
 
 
 class CompanyForm(forms.ModelForm):
@@ -50,6 +50,26 @@ class FairForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if name not in ['start_date', 'end_date', 'description']:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class BriefForm(forms.ModelForm):
+    class Meta:
+        model = Brief
+        fields = [
+            'stand_boyutu', 'stand_konumu', 'stand_tipi',
+            'fiyat', 'para_birimi', 'gecerlilik_tarihi',
+            'ozel_notlar', 'durum',
+        ]
+        widgets = {
+            'gecerlilik_tarihi': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'ozel_notlar': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if name not in ['gecerlilik_tarihi', 'ozel_notlar']:
                 field.widget.attrs['class'] = 'form-control'
 
 

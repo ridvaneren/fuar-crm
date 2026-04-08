@@ -64,7 +64,11 @@
                     <td>{{ company.get_next_action_display|default:'-' }}</td>
                     <td>{{ company.fair|default:'-' }}</td>
                     <td>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% if company.company_status == 'sozlesme_hazirla' or company.company_status == 'teklif_ver' %}
+                                <a href="{% url 'brief_create' company.pk %}" class="btn btn-sm btn-success">Brief</a>
+                            {% endif %}
+                            <a href="{% url 'brief_list' company.pk %}" class="btn btn-sm btn-outline-secondary">Briefs</a>
                             <a href="{% url 'company_edit' company.pk %}" class="btn btn-sm btn-warning">Düzenle</a>
                             <a href="{% url 'company_delete' company.pk %}" class="btn btn-sm btn-danger">Sil</a>
                         </div>
